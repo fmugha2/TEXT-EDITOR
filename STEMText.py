@@ -1,8 +1,5 @@
 import wx
-class MyPanel(wx.Panel):
-    def __init__(self):
-        self.SetBackgroundColour(wx.LIGHT_GREY)
-
+import tab
 
 class MyFrame(wx.Frame):
     def on_about(self, event):
@@ -21,10 +18,14 @@ class MyFrame(wx.Frame):
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=(500, 500))
-        panel = wx.Panel
-        self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        #The Tabs
+        panel = wx.Panel(self)
+        notebook = tab.NotebookPanel(panel)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
+        panel.SetSizer(sizer)
+        #The Menu
         menubar = wx.MenuBar()
-
         filemenu = wx.Menu()
         aboutitem = filemenu.Append(wx.ID_ABOUT, "About", "Information about this program")
         self.Bind(wx.EVT_MENU, self.on_about, aboutitem)
@@ -55,6 +56,7 @@ class MyFrame(wx.Frame):
         menubar.Append(codemenu, "&Code")
 
         self.SetMenuBar(menubar)
+        self.Layout()
         self.Show(True)
 
 
