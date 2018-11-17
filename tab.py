@@ -1,18 +1,20 @@
 import wx
 
+
 class TabPanel(wx.Panel):
 
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(sizer)
-        self.control = wx.TextCtrl(self, size = (465, 405), style = wx.TE_MULTILINE)
-
+        sizerv = wx.BoxSizer(wx.VERTICAL)
+        sizerh = wx.BoxSizer(wx.HORIZONTAL)
+        sizerv.Add(sizerh, wx.EXPAND)
+        sizerv.Add(wx.TextCtrl(self, 1, style = wx.TE_MULTILINE), 1, wx.EXPAND)
+        self.SetSizerAndFit(sizerv)
 
 
 class NotebookPanel(wx.Notebook):
 
-    def createTab(self, name):
+    def create_tab(self, name):
         tab = TabPanel(self)
         tab.SetBackgroundColour(wx.LIGHT_GREY)
         self.AddPage(tab, name)
@@ -20,8 +22,8 @@ class NotebookPanel(wx.Notebook):
     def __init__(self, parent):
         wx.Notebook.__init__(self, parent, id=wx.ID_ANY, style=wx.BK_DEFAULT)
 
-        self.createTab(name = "Tab 1")
-        self.createTab(name = "Tab 2")
+        self.create_tab(name = "Tab 1")
+        self.create_tab(name = "Tab 2")
 
 
         """
@@ -33,19 +35,19 @@ class NotebookPanel(wx.Notebook):
         self.SetPageImage(0, idx1)
         """
 
-        def OnPageChanged(self, event):
-            old = event.GetOldSelection()
-            new = event.GetSelection()
-            sel = self.GetSelection()
-            print('OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel))
-            event.Skip()
+    def OnPageChanged(self, event):
+        old = event.GetOldSelection()
+        new = event.GetSelection()
+        sel = self.GetSelection()
+        print('OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel))
+        event.Skip()
 
-        def OnPageChanging(self, event):
-            old = event.GetOldSelection()
-            new = event.GetSelection()
-            sel = self.GetSelection()
-            print('OnPageChanging, old:%d, new:%d, sel:%d\n' % (old, new, sel))
-            event.Skip()
+    def OnPageChanging(self, event):
+        old = event.GetOldSelection()
+        new = event.GetSelection()
+        sel = self.GetSelection()
+        print('OnPageChanging, old:%d, new:%d, sel:%d\n' % (old, new, sel))
+        event.Skip()
 
 
 

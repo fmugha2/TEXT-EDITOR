@@ -1,6 +1,6 @@
 import wx
 import tab
-
+import wx.lib.inspection
 class MyFrame(wx.Frame):
     def on_about(self, event):
         dlg = wx.MessageDialog(self, "U fuckin wot, m8?", "About TechText", wx.OK)
@@ -24,6 +24,7 @@ class MyFrame(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         panel.SetSizer(sizer)
+
         #The Menu
         menubar = wx.MenuBar()
         filemenu = wx.Menu()
@@ -58,6 +59,7 @@ class MyFrame(wx.Frame):
         self.SetMenuBar(menubar)
         self.Layout()
         self.Show(True)
+        #wx.lib.inspection.InspectionTool().Show()
 
 
 app = wx.App(False)
