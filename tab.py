@@ -16,14 +16,12 @@ class NotebookPanel(wx.Notebook):
 
     def create_tab(self, name):
         tab = TabPanel(self)
-        tab.SetBackgroundColour(wx.LIGHT_GREY)
         self.AddPage(tab, name)
 
     def __init__(self, parent):
         wx.Notebook.__init__(self, parent, id=wx.ID_ANY, style=wx.BK_DEFAULT)
 
-        self.create_tab(name = "Tab 1")
-        self.create_tab(name = "Tab 2")
+        self.create_tab(name = "New Tab")
 
 
         """
