@@ -27,7 +27,10 @@ class WidgetPanel(wx.Panel):
 
     # The method called by the create tab button. Creates a tab
     def add_tab(self, name):
-        self.notebook.create_tab(name = "New Tab")
+        newTab = wx.TextEntryDialog(None, "Enter Tab Name", 'Adding New Tab', 'New Tab')
+        if newTab.ShowModal() == wx.ID_OK:
+            newTabName = newTab.GetValue()
+            self.notebook.create_tab(name = newTabName)
 
 class TableToolbox(wx.Panel):
 
@@ -133,9 +136,48 @@ class MenuFrame(wx.Frame):
     def on_exit(self, event):
         self.Close(True)
 
-    #NEED IMPLEMENTATION
+    # closes the program. Called by the "close" menu item
+    def on_open(self, event):
+        #ask the user what new file to open
+        with wx.FileDialog(self, "Open", wildcard="Text Document (*.txt)|*.txt",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return  # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            pathname = fileDialog.GetPath()
+            try:
+                with open(pathname, 'r') as file:
+                    self.doLoadData(pathname) #idk what this is  cuz it don't work LOL
+            except IOError:
+                wx.LogError("Cannot open file '%s'." % newfile)
+
+    def doLoadData(self, name):
+        self.panel.notebook.load(name)
+
+
+    """
+    Creates a file and passes the pathname through to the notebook,
+    which then gets its current text control object to save to the created file.
+    """
     def on_saveas(self, event):
-        print("Something")
+        with wx.FileDialog(self, "Save As", wildcard="Text Document (*.txt)|*.txt",
+                           style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return  # the user changed their mind
+
+            # save the current contents in the file
+            pathname = fileDialog.GetPath()
+            try:
+                with open(pathname, 'w') as file:
+                    self.doSaveData(pathname)
+            except IOError:
+                wx.LogError("Cannot save current data in file '%s'." % pathname)
+
+    def doSaveData(self, name):
+        self.panel.notebook.save(name)
 
     #NEED IMPLEMENTATION
     def on_dark(self, event):
@@ -160,15 +202,23 @@ class MenuFrame(wx.Frame):
         #The Menu
         menubar = wx.MenuBar()
         filemenu = wx.Menu()
+
         new_tab_item = filemenu.Append(wx.ID_ABOUT, "New Tab", "Open a New Tab")
         self.Bind(wx.EVT_MENU, self.on_new_tab, new_tab_item)
         filemenu.AppendSeparator()
+
+        openitem = filemenu.Append(wx.ID_OPEN, "Open", "Open Existing Document")
+        self.Bind(wx.EVT_MENU, self.on_open, openitem)
+        filemenu.AppendSeparator()
+
         saveasitem = filemenu.Append(wx.ID_SAVEAS, "Save As", "Save this document as a new file")
         self.Bind(wx.EVT_MENU, self.on_saveas, saveasitem)
         filemenu.AppendSeparator()
+
         exititem = filemenu.Append(wx.ID_EXIT, "Exit", "Terminate the program")
         self.Bind(wx.EVT_MENU, self.on_exit, exititem)
         filemenu.AppendSeparator()
+
         menubar.Append(filemenu, "&File")
 
         editmenu = wx.Menu()
@@ -196,6 +246,6 @@ class MenuFrame(wx.Frame):
 
 
 app = wx.App(False)
-frame = MenuFrame(None, 'TechText')
+frame = MenuFrame(None, 'STEM Text')
 frame.Center()
 app.MainLoop()

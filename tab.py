@@ -9,11 +9,23 @@ class TabPanel(wx.Panel):
         sizerv = wx.BoxSizer(wx.VERTICAL)
         sizerh = wx.BoxSizer(wx.HORIZONTAL)
         sizerv.Add(sizerh, wx.EXPAND)
-        sizerv.Add(wx.TextCtrl(self, 1, style=wx.TE_MULTILINE), 1, wx.EXPAND)
+        self.text_control = wx.TextCtrl(self, 1, style=wx.TE_MULTILINE)
+        sizerv.Add(self.text_control, 1, wx.EXPAND)
         self.SetSizerAndFit(sizerv)
 
 
 class NotebookPanel(aui.AuiNotebook):
+
+    def load(self, name):
+        tab = TabPanel(self)
+        tab.text_control.LoadFile(name, fileType=wx.TEXT_TYPE_ANY)
+        self.AddPage(tab, name)
+
+    def save(self, name):
+        tab: TabPanel
+        tab = self.GetCurrentPage()
+        tab.text_control.SaveFile(name, fileType=wx.TEXT_TYPE_ANY)
+
     # Creates a tab and adds it to the notebook
     def create_tab(self, name):
         tab = TabPanel(self)
