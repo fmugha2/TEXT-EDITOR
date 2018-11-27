@@ -10,17 +10,6 @@ class WidgetPanel(wx.Panel):
         self.widgetSizer = wx.BoxSizer(wx.VERTICAL)
         self.notebook = tab.NotebookPanel(self)
         self.mainsizer = wx.BoxSizer(wx.VERTICAL)
-        buttonsizer = wx.BoxSizer(wx.HORIZONTAL)
-
-        add_tab_button = wx.Button(self, label="Add Tab")
-        add_tab_button.Bind(wx.EVT_BUTTON, self.add_tab)
-        buttonsizer.Add(add_tab_button)
-
-        remove_tab_button = wx.Button(self, label="Remove Tab")
-        remove_tab_button.Bind(wx.EVT_BUTTON, self.remove_tab)
-        buttonsizer.Add(remove_tab_button)
-
-        self.mainsizer.Add(buttonsizer)
 
         self.mainsizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND, 5)
         self.mainsizer.Add(self.widgetSizer, 0, wx.CENTER | wx.ALL, 10)
@@ -37,12 +26,8 @@ class WidgetPanel(wx.Panel):
         self.frame.fSizer.Layout()
 
     # The method called by the create tab button. Creates a tab
-    def add_tab(self, event):
+    def add_tab(self, name):
         self.notebook.create_tab(name = "New Tab")
-
-    # The method called by the remove tab button. NEEDS TO BE IMPLEMENTED
-    def remove_tab(self, event):
-        print("Something")
 
 class TableToolbox(wx.Panel):
 
@@ -106,8 +91,10 @@ class TableToolbox(wx.Panel):
 
     # Adds a table to the parent class's sizer.
     def add_table(self, event):
+        table_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.t = table.Table(self.pframe, self.rows, self.columns)
-        self.pframe.mainsizer.Add(self.t)
+        table_sizer.Add(self.t)
+        self.pframe.mainsizer.Add(table_sizer)
         self.pframe.parent_layout()
 
     def remove_table(self, event):
@@ -139,10 +126,8 @@ class TableToolbox(wx.Panel):
 class MenuFrame(wx.Frame):
 
     #Displays a message. Called by the "about" menu item.
-    def on_about(self, event):
-        dlg = wx.MessageDialog(self, "STEMText is pretty neat, I guess.", "About TechText", wx.OK)
-        dlg.ShowModal()
-        dlg.Destroy()
+    def on_new_tab(self, event):
+        self.panel.add_tab(name = "name")
 
     #closes the program. Called by the "close" menu item
     def on_exit(self, event):
@@ -175,8 +160,8 @@ class MenuFrame(wx.Frame):
         #The Menu
         menubar = wx.MenuBar()
         filemenu = wx.Menu()
-        aboutitem = filemenu.Append(wx.ID_ABOUT, "About", "Information about this program")
-        self.Bind(wx.EVT_MENU, self.on_about, aboutitem)
+        new_tab_item = filemenu.Append(wx.ID_ABOUT, "New Tab", "Open a New Tab")
+        self.Bind(wx.EVT_MENU, self.on_new_tab, new_tab_item)
         filemenu.AppendSeparator()
         saveasitem = filemenu.Append(wx.ID_SAVEAS, "Save As", "Save this document as a new file")
         self.Bind(wx.EVT_MENU, self.on_saveas, saveasitem)
